@@ -1,0 +1,6 @@
+## Author: Homerocker
+## Title: RaidEvents
+## Version: 1.0
+## Interface: 30300
+
+RaidEvents.lua
