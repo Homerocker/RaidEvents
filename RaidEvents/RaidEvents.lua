@@ -101,6 +101,13 @@ frame:SetScript("OnMouseWheel", function(self, delta)
     scrollBar:SetValue(cur_val)
   end
 end)
+
+frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+frame:SetScript("OnEvent", function(self)
+  RaidEventsFrame:Show()
+  self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+end)
+
 SLASH_RE1 = "/re"
 SlashCmdList.RE = function()
   if RaidEventsFrame:IsShown() then
@@ -109,9 +116,3 @@ SlashCmdList.RE = function()
     RaidEventsFrame:Show()
   end
 end
-
-frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-frame:SetScript("OnEvent", function(self)
-  RaidEventsFrame:Show()
-  self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-end)
