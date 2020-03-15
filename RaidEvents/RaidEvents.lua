@@ -52,7 +52,7 @@ messageFrame:SetTextColor(1, 1, 1, 1) -- default color
 messageFrame:SetJustifyH("LEFT")
 messageFrame:SetHyperlinksEnabled(true)
 messageFrame:SetFading(false)
-messageFrame:SetMaxLines(300)
+--messageFrame:SetMaxLines(300)
 frame.messageFrame = messageFrame
 
 function frame:print(message)
@@ -76,7 +76,7 @@ frame.scrollBar = scrollBar
 
 frame:SetScript("OnSizeChanged", function(_, w, h)
   messageFrame:SetSize(w, h - 50)
-  scrollBar:SetSize(30, h - 90)
+  scrollBar:SetHeight(h - 90)
 end)
 
 scrollBar:SetScript("OnValueChanged", function(self, value)
