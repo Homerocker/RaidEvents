@@ -1,8 +1,6 @@
-local frame = CreateFrame("Frame", "RaidEventsFrame", UIParent)
-frame.width = 500
-frame.height = 250
+local frame = CreateFrame("Frame", "RaidEvents", UIParent)
 frame:SetFrameStrata("FULLSCREEN_DIALOG")
-frame:SetSize(frame.width, frame.height)
+frame:SetSize(500, 250)
 frame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 frame:SetBackdrop({
   bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
@@ -32,7 +30,7 @@ end
 frame:SetScript("OnDragStart", frame.StartMovingOrSizing)
 frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
 
---tinsert(UISpecialFrames, "RaidEventsFrame")
+--tinsert(UISpecialFrames, "RaidEvents")
 
 -- Close button
 local closeButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
@@ -46,49 +44,49 @@ end)
 frame.closeButton = closeButton
 
 -- ScrollingMessageFrame
-RaidEvents = CreateFrame("ScrollingMessageFrame", nil, frame)
-RaidEvents:SetPoint("CENTER", 15, 20)
-RaidEvents:SetSize(frame.width, frame.height - 50)
-RaidEvents:SetFontObject(GameFontNormal)
-RaidEvents:SetTextColor(1, 1, 1, 1) -- default color
-RaidEvents:SetJustifyH("LEFT")
-RaidEvents:SetHyperlinksEnabled(true)
-RaidEvents:SetFading(false)
-RaidEvents:SetMaxLines(300)
-function RaidEvents:print(message)
-  self:AddMessage("[" .. date('%H:%M:%S', time()) .. "] " .. message)
+local messageFrame = CreateFrame("ScrollingMessageFrame", nil, frame)
+messageFrame:SetPoint("CENTER", 15, 20)
+messageFrame:SetSize(frame:GetWidth(), frame:GetHeight() - 50)
+messageFrame:SetFontObject(GameFontNormal)
+messageFrame:SetTextColor(1, 1, 1, 1) -- default color
+messageFrame:SetJustifyH("LEFT")
+messageFrame:SetHyperlinksEnabled(true)
+messageFrame:SetFading(false)
+messageFrame:SetMaxLines(300)
+frame.messageFrame = messageFrame
+
+function frame:print(message)
+  self.messageFrame:AddMessage("[" .. date('%H:%M:%S', time()) .. "] " .. message)
 end
 
-frame.RaidEvents = RaidEvents
-
---RaidEvents:ScrollToBottom()
---RaidEvents:ScrollDown()
---print(RaidEvents:GetNumMessages(), RaidEvents:GetNumLinesDisplayed())
+--messageFrame:ScrollToBottom()
+--messageFrame:ScrollDown()
+--print(messageFrame:GetNumMessages(), messageFrame:GetNumLinesDisplayed())
 
 -------------------------------------------------------------------------------
 -- Scroll bar
 -------------------------------------------------------------------------------
 local scrollBar = CreateFrame("Slider", nil, frame, "UIPanelScrollBarTemplate")
 scrollBar:SetPoint("RIGHT", frame, "RIGHT", -10, 10)
-scrollBar:SetSize(30, frame.height - 90)
+scrollBar:SetSize(30, frame:GetHeight() - 90)
 scrollBar:SetMinMaxValues(0, 9)
 scrollBar:SetValueStep(1)
 scrollBar.scrollStep = 1
 frame.scrollBar = scrollBar
 
 frame:SetScript("OnSizeChanged", function(_, w, h)
-  RaidEvents:SetSize(w, h - 50)
+  messageFrame:SetSize(w, h - 50)
   scrollBar:SetSize(30, h - 90)
 end)
 
 scrollBar:SetScript("OnValueChanged", function(self, value)
-  RaidEvents:SetScrollOffset(select(2, scrollBar:GetMinMaxValues()) - value)
+  messageFrame:SetScrollOffset(select(2, scrollBar:GetMinMaxValues()) - value)
 end)
 
 scrollBar:SetValue(select(2, scrollBar:GetMinMaxValues()))
 
 frame:SetScript("OnMouseWheel", function(self, delta)
-  --print(RaidEvents:GetNumMessages(), RaidEvents:GetNumLinesDisplayed())
+  --print(messageFrame:GetNumMessages(), messageFrame:GetNumLinesDisplayed())
 
   local cur_val = scrollBar:GetValue()
   local min_val, max_val = scrollBar:GetMinMaxValues()
@@ -104,15 +102,15 @@ end)
 
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:SetScript("OnEvent", function(self)
-  RaidEventsFrame:Show()
+  RaidEvents:Show()
   self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end)
 
 SLASH_RE1 = "/re"
 SlashCmdList.RE = function()
-  if RaidEventsFrame:IsShown() then
-    RaidEventsFrame:Hide()
+  if RaidEvents:IsShown() then
+    RaidEvents:Hide()
   else
-    RaidEventsFrame:Show()
+    RaidEvents:Show()
   end
 end
