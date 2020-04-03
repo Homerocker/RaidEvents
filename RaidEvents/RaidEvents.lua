@@ -65,6 +65,8 @@ frame.messageFrame = messageFrame
 local scrollBar = CreateFrame("Slider", nil, frame, "UIPanelScrollBarTemplate")
 scrollBar:SetPoint("RIGHT", frame, "RIGHT", 8, 0)
 scrollBar:SetSize(20, frame:GetHeight() - 35)
+-- for some reason has to be here although values are set in update(), otherwise scrollbar cannot display
+scrollBar:SetMinMaxValues(0, 9)
 scrollBar:SetValueStep(1)
 function scrollBar:update()
   if self:GetParent().messageFrame:GetNumMessages() > self:GetParent().messageFrame:GetNumLinesDisplayed() then
@@ -89,7 +91,6 @@ function scrollBar:update()
     self:Hide()
   end
 end
-
 frame.scrollBar = scrollBar
 
 function frame:print(message)
