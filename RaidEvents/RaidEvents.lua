@@ -31,6 +31,8 @@ function frame:StartMovingOrSizing(button)
   if button == "LeftButton" then
     self:StartMoving()
   else
+    --self.scrollBar.value = self.scrollBar:GetValue()
+    --self.scrollBar.maxValue = select(2, self.scrollBar:GetMinMaxValues())
     self:StartSizing("BOTTOMRIGHT")
   end
 end
@@ -91,6 +93,7 @@ function scrollBar:update()
     self:Hide()
   end
 end
+
 frame.scrollBar = scrollBar
 
 function frame:print(message)
@@ -134,7 +137,9 @@ frame:SetScript("OnEvent", function(self, event, arg1)
         RaidEvents_SV.history(pack(unpack(RaidEvents_SV.history, #RaidEvents_SV.history - self.messageFrame:GetMaxLines() + 1, #RaidEvents_SV.history)))
       end
       for _, message in pairs(RaidEvents_SV.history) do
-        self.messageFrame:AddMessage("[" .. message[1] .. "] " .. message[2])
+        if message[1] and message[2] then
+          self.messageFrame:AddMessage("[" .. message[1] .. "] " .. message[2])
+        end
       end
       self.scrollBar:update()
     end
@@ -144,9 +149,9 @@ end)
 
 local function DBMEventHandler(event, mod)
   if event == "kill" or event == "wipe" then
-    RaidEvents:print(mod.combatInfo.name.." combat ended.")
+    RaidEvents:print(mod.combatInfo.name .. " combat ended.")
   elseif event == "pull" then
-    RaidEvents:print(mod.combatInfo.name.." combat started.")
+    RaidEvents:print(mod.combatInfo.name .. " combat started.")
   end
 end
 
