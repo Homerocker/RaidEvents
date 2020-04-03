@@ -4,6 +4,8 @@
     By default only displays boss combat start and combat end.
     Functionality is extended with additional RaidEvents modules (addons).
     Type "/re" to show/hide the frame.
+    Left mouse button to drag frame.
+    Right mouse button to resize frame.
 
 # Modules
 
