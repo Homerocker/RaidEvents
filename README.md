@@ -3,7 +3,7 @@
     Adds a frame to display important combat events.
     By default only displays boss combat start and combat end.
     Functionality is extended with additional RaidEvents modules (addons).
-    Type "/re" to show/hide the frame.
+    Type ``/re`` to show/hide the frame.
 
 #Modules:
 ### 1. RaidEventsBacklash.
