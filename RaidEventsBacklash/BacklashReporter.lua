@@ -33,7 +33,7 @@ function f:report()
       if index ~= 1 then
         text = text .. ", "
       end
-      text = text .. UnitClassColored(name) .. " (" .. (self.stacks[name]) .. ")"
+      text = text .. UnitNameColored(name) .. " (" .. (self.stacks[name]) .. ")"
     end
   end
   self:reset()
