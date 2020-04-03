@@ -18,6 +18,6 @@ Type "/re" to show/hide the frame.
  6. RaidEventsSunderArmor.
    - Displays Sunder Armor casters and stacks after boss fight ends.
  7. RaidEventsVampiricBite.
-   - Displays Vampirit Bite casters and targets on BQL.
+   - Displays Vampiric Bite casters and targets on BQL.
  8. RaidEventsVengefulSpirit.
    - Displays who triggered Vengeful Spirit explosion on LDW. Only detects explosions that are available in combat log (unreliable).
