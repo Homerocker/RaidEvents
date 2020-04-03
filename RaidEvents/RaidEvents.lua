@@ -1,16 +1,15 @@
 local frame = CreateFrame("Frame", "RaidEvents", UIParent)
 frame:SetFrameStrata("FULLSCREEN_DIALOG")
-frame:SetSize(500, 250)
-frame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+frame:SetPoint("CENTER", UIParent, "CENTER")
 frame:SetBackdrop({
   bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
   edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
   tile = true,
   tileSize = 32,
-  edgeSize = 32,
-  insets = { left = 8, right = 8, top = 8, bottom = 8 }
+  edgeSize = 16,
+  insets = { left = 4, right = 4, top = 4, bottom = 4 }
 })
-frame:SetBackdropColor(0, 0, 0, 1)
+frame:SetBackdropColor(0, 0, 0, .85)
 frame:EnableMouse(true)
 frame:EnableMouseWheel(true)
 
@@ -18,6 +17,15 @@ frame:EnableMouseWheel(true)
 frame:SetMovable(true)
 frame:SetResizable(true)
 frame:SetMinResize(100, 100)
+
+--[[
+local drag1 = CreateFrame("Frame", nil, frame)
+drag1:SetSize(10,10)
+drag1:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0);
+drag1:RegisterForDrag("LeftButton")
+]] --
+
+
 frame:RegisterForDrag("LeftButton", "RightButton")
 function frame:StartMovingOrSizing(button)
   if button == "LeftButton" then
@@ -27,37 +35,25 @@ function frame:StartMovingOrSizing(button)
   end
 end
 
+function frame:OnDragStop()
+  self:StopMovingOrSizing()
+  self.scrollBar:update()
+end
+
 frame:SetScript("OnDragStart", frame.StartMovingOrSizing)
-frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
-
---tinsert(UISpecialFrames, "RaidEvents")
-
--- Close button
-local closeButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
-closeButton:SetPoint("BOTTOM", 0, 10)
-closeButton:SetHeight(25)
-closeButton:SetWidth(70)
-closeButton:SetText(CLOSE)
-closeButton:SetScript("OnClick", function(self)
-  HideParentPanel(self)
-end)
-frame.closeButton = closeButton
+frame:SetScript("OnDragStop", frame.OnDragStop)
 
 -- ScrollingMessageFrame
 local messageFrame = CreateFrame("ScrollingMessageFrame", nil, frame)
-messageFrame:SetPoint("CENTER", 15, 20)
-messageFrame:SetSize(frame:GetWidth(), frame:GetHeight() - 50)
-messageFrame:SetFontObject(GameFontNormal)
+messageFrame:SetPoint("CENTER", -2, 0)
+messageFrame:SetSize(frame:GetWidth() - 20, frame:GetHeight() - 20)
+messageFrame:SetFontObject(GameFontNormal) -- GameFontNormalLarge
 messageFrame:SetTextColor(1, 1, 1, 1) -- default color
 messageFrame:SetJustifyH("LEFT")
 messageFrame:SetHyperlinksEnabled(true)
 messageFrame:SetFading(false)
---messageFrame:SetMaxLines(300)
+messageFrame:SetMaxLines(300)
 frame.messageFrame = messageFrame
-
-function frame:print(message)
-  self.messageFrame:AddMessage("[" .. date('%H:%M:%S', time()) .. "] " .. message)
-end
 
 --messageFrame:ScrollToBottom()
 --messageFrame:ScrollDown()
@@ -67,44 +63,95 @@ end
 -- Scroll bar
 -------------------------------------------------------------------------------
 local scrollBar = CreateFrame("Slider", nil, frame, "UIPanelScrollBarTemplate")
-scrollBar:SetPoint("RIGHT", frame, "RIGHT", -10, 10)
-scrollBar:SetSize(30, frame:GetHeight() - 90)
-scrollBar:SetMinMaxValues(0, 9)
+scrollBar:SetPoint("RIGHT", frame, "RIGHT", 8, 0)
+scrollBar:SetSize(20, frame:GetHeight() - 35)
 scrollBar:SetValueStep(1)
-scrollBar.scrollStep = 1
+function scrollBar:update()
+  if self:GetParent().messageFrame:GetNumMessages() > self:GetParent().messageFrame:GetNumLinesDisplayed() then
+    self:SetMinMaxValues(0, self:GetParent().messageFrame:GetNumMessages() - self:GetParent().messageFrame:GetNumLinesDisplayed())
+    if not self:IsShown() then
+      self:GetParent():SetScript("OnMouseWheel", function(self, delta)
+        local cur_val = self.scrollBar:GetValue()
+        local min_val, max_val = self.scrollBar:GetMinMaxValues()
+
+        if delta < 0 and cur_val < max_val then
+          cur_val = math.min(max_val, cur_val + 1)
+          self.scrollBar:SetValue(cur_val)
+        elseif delta > 0 and cur_val > min_val then
+          cur_val = math.max(min_val, cur_val - 1)
+          self.scrollBar:SetValue(cur_val)
+        end
+      end)
+      self:Show()
+    end
+  elseif self:IsShown() then
+    self:GetParent():SetScript("OnMouseWheel", nil)
+    self:Hide()
+  end
+end
+
 frame.scrollBar = scrollBar
 
-frame:SetScript("OnSizeChanged", function(_, w, h)
-  messageFrame:SetSize(w, h - 50)
-  scrollBar:SetHeight(h - 90)
+function frame:print(message)
+  local datetime = date('%H:%M:%S', time())
+  table.insert(RaidEvents_SV.history, { datetime, message })
+  self.messageFrame:AddMessage("[" .. datetime .. "] " .. message)
+  self.scrollBar:update()
+end
+
+frame:SetScript("OnSizeChanged", function(self, w, h)
+  self.messageFrame:SetSize(w - 20, h - 20)
+  self.scrollBar:SetHeight(h - 35)
+  self.scrollBar:update()
 end)
 
-scrollBar:SetScript("OnValueChanged", function(self, value)
-  messageFrame:SetScrollOffset(select(2, scrollBar:GetMinMaxValues()) - value)
+frame.scrollBar:SetScript("OnValueChanged", function(self, value)
+  self:GetParent().messageFrame:SetScrollOffset(select(2, self:GetMinMaxValues()) - value)
+  self:update()
 end)
 
-scrollBar:SetValue(select(2, scrollBar:GetMinMaxValues()))
+frame.scrollBar:SetValue(select(2, frame.scrollBar:GetMinMaxValues()))
 
-frame:SetScript("OnMouseWheel", function(self, delta)
-  --print(messageFrame:GetNumMessages(), messageFrame:GetNumLinesDisplayed())
-
-  local cur_val = scrollBar:GetValue()
-  local min_val, max_val = scrollBar:GetMinMaxValues()
-
-  if delta < 0 and cur_val < max_val then
-    cur_val = math.min(max_val, cur_val + 1)
-    scrollBar:SetValue(cur_val)
-  elseif delta > 0 and cur_val > min_val then
-    cur_val = math.max(min_val, cur_val - 1)
-    scrollBar:SetValue(cur_val)
+frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+frame:RegisterEvent("ADDON_LOADED")
+frame:SetScript("OnEvent", function(self, event, arg1)
+  if event == "PLAYER_ENTERING_WORLD" then
+    self.scrollBar:update()
+    RaidEvents:Show()
+    self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+  elseif event == "ADDON_LOADED" and arg1 == "RaidEvents" then
+    RaidEvents_SV = RaidEvents_SV or {}
+    RaidEvents_SV.frameWidth = RaidEvents_SV.frameWidth or 500
+    RaidEvents_SV.frameHeight = RaidEvents_SV.frameHeight or 250
+    self:SetSize(RaidEvents_SV.frameWidth, RaidEvents_SV.frameHeight)
+    RaidEvents_SV.frameofsx = RaidEvents_SV.frameofsx or 0
+    RaidEvents_SV.frameofsy = RaidEvents_SV.frameofsy or 0
+    self:SetPoint("CENTER", RaidEvents_SV.frameofsx, RaidEvents_SV.frameofsy)
+    RaidEvents_SV.history = RaidEvents_SV.history or {}
+    if #RaidEvents_SV.history ~= 0 then
+      if #RaidEvents_SV.history > self.messageFrame:GetMaxLines() then
+        RaidEvents_SV.history(pack(unpack(RaidEvents_SV.history, #RaidEvents_SV.history - self.messageFrame:GetMaxLines() + 1, #RaidEvents_SV.history)))
+      end
+      for _, message in pairs(RaidEvents_SV.history) do
+        self.messageFrame:AddMessage("[" .. message[1] .. "] " .. message[2])
+      end
+      self.scrollBar:update()
+    end
+    self:UnregisterEvent("ADDON_LOADED")
   end
 end)
 
-frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-frame:SetScript("OnEvent", function(self)
-  RaidEvents:Show()
-  self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-end)
+local function DBMEventHandler(event, mod)
+  if event == "kill" or event == "wipe" then
+    RaidEvents:print(mod.combatInfo.name.." combat ended.")
+  elseif event == "pull" then
+    RaidEvents:print(mod.combatInfo.name.." combat started.")
+  end
+end
+
+DBM:RegisterCallback("pull", DBMEventHandler)
+DBM:RegisterCallback("kill", DBMEventHandler)
+DBM:RegisterCallback("wipe", DBMEventHandler)
 
 SLASH_RE1 = "/re"
 SlashCmdList.RE = function()

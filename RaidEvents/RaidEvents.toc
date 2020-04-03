@@ -2,5 +2,11 @@
 ## Title: Raid Events
 ## Version: 1.0
 ## Interface: 30300
+## SavedVariables: RaidEvents_SV
+## Dependencies: DBM-Core
+## OptionalDeps: LibTableContains, LibUnitNameColored
 
+Libs/LibStub.lua
+Libs/LibTableContains.lua
+Libs/LibUnitNameColored.lua
 RaidEvents.lua
