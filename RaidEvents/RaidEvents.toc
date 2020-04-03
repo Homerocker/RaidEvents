@@ -6,7 +6,7 @@
 ## Dependencies: DBM-Core
 ## OptionalDeps: LibStub, LibTableContains, LibUnitNameColored
 
-Libs/LibStub.lua
-Libs/LibTableContains.lua
-Libs/LibUnitNameColored.lua
+Libs\LibStub.lua
+Libs\LibTableContains.lua
+Libs\LibUnitNameColored.lua
 RaidEvents.lua
