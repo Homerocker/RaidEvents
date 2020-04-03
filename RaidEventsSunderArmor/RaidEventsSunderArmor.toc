@@ -1,0 +1,4 @@
+## Interface: 30300
+## Title: Raid Events: Sunder Armor
+## Dependencies: RaidEvents, DBM-Core
+SunderArmorReporter.lua

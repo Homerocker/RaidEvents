@@ -1,0 +1,5 @@
+## Interface: 30300
+## Title: Raid Events: Malleable Goo
+## Author: Homerocker
+## Dependencies: RaidEvents, DBM-Core
+RaidEventsMalleableGoo.lua

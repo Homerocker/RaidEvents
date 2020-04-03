@@ -1,0 +1,5 @@
+## Interface: 30300
+## Title: Raid Events: Choking Gas
+## Author: Homerocker
+## Dependencies: RaidEvents, DBM-Core
+RaidEventsChokingGas.lua

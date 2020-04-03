@@ -1,0 +1,5 @@
+## Interface: 30300
+## Title: Raid Events: Vampiric Bite
+## Author: Homerocker
+## Dependencies: RaidEvents
+VampiricBite.lua

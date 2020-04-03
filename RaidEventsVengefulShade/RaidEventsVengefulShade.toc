@@ -1,0 +1,5 @@
+## Interface: 30300
+## Title: Raid Events: Vengeful Shade
+## Author: Homerocker
+## Dependencies: RaidEvents, DBM-Core
+RaidEventsVengefulShade.lua
