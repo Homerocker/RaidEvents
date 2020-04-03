@@ -5,7 +5,7 @@
     Functionality is extended with additional RaidEvents modules (addons).
     Type "/re" to show/hide the frame.
 
-# Modules:
+# Modules
 
 ### 1. RaidEventsBacklash.
     Displays Sindragosa Instability (Unchained Magic) explosions.
