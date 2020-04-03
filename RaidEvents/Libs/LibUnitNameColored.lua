@@ -23,5 +23,5 @@ function UnitNameColored(unit)
     WARLOCK = "8787ED",
     WARRIOR = "C79C6E"
   }
-  return "|cFF"..colors[class].."|r"
+  return "|cFF"..colors[class]..unit.."|r"
 end
