@@ -89,14 +89,16 @@ f:SetScript("OnEvent", function(self, _, ...)
       end
       self.mds[arg[7]] = nil
     end
-  elseif arg[2] == "SPELL_CAST_START" and (arg[9] == 74270 or arg[9] == 74271 or arg[9] == 74272 or arg[9] == 74273 or arg[9] == 74274 or arg[9] == 74275) then
+  elseif arg[2] == "SPELL_CAST_START" and table.contains({ 74270, 74271, 74272, 74273, 74274, 74275, 68981, 72259 }, arg[9]) then
     -- Remorseless Winter, resetting Raging Spirit counter
     -- 74270 25n trans1
     -- 74273 25n trans2
     -- 74272 25hc trans1
     -- 74275 25hc trans2
-    -- 74274 ?
+    -- 74274 p2?
     -- 74271 10n trans2
+    -- 68981 ?
+    -- 72259 p2?
     self.RagingSpirits = {}
   end
 
