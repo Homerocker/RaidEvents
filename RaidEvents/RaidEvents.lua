@@ -31,14 +31,15 @@ function frame:StartMovingOrSizing(button)
   if button == "LeftButton" then
     self:StartMoving()
   else
-    --self.scrollBar.value = self.scrollBar:GetValue()
-    --self.scrollBar.maxValue = select(2, self.scrollBar:GetMinMaxValues())
+    self.isResizing = true
+    self.scrollBar.offset = select(2, self.scrollBar:GetMinMaxValues()) - self.scrollBar:GetValue()
     self:StartSizing("BOTTOMRIGHT")
   end
 end
 
 function frame:OnDragStop()
   self:StopMovingOrSizing()
+  self.isResizing = false
   self.scrollBar:update()
 end
 
@@ -72,7 +73,15 @@ scrollBar:SetMinMaxValues(0, 9)
 scrollBar:SetValueStep(1)
 function scrollBar:update()
   if self:GetParent().messageFrame:GetNumMessages() > self:GetParent().messageFrame:GetNumLinesDisplayed() then
+    local cur_val = self:GetValue()
+    local max_val = select(2, self:GetMinMaxValues())
     self:SetMinMaxValues(0, self:GetParent().messageFrame:GetNumMessages() - self:GetParent().messageFrame:GetNumLinesDisplayed())
+    if cur_val == max_val then
+      self:SetValue(select(2, self:GetMinMaxValues()))
+    elseif self.offset and not self:GetParent().isResizing then
+      self:SetValue(select(2, self:GetMinMaxValues()) - self.offset)
+      self.offset = nil
+    end
     if not self:IsShown() then
       self:GetParent():SetScript("OnMouseWheel", function(self, delta)
         local cur_val = self.scrollBar:GetValue()
@@ -101,6 +110,9 @@ function frame:print(message)
   table.insert(RaidEvents_SV.history, { datetime, message })
   self.messageFrame:AddMessage("[" .. datetime .. "] " .. message)
   self.scrollBar:update()
+  --if select(2, self.scrollBar:GetMinMaxValues()) - self.scrollBar:GetValue() == 1 then
+  --  self.scrollBar:SetValue(self.scrollBar:GetValue() + 1)
+  --end
 end
 
 frame:SetScript("OnSizeChanged", function(self, w, h)
@@ -134,7 +146,7 @@ frame:SetScript("OnEvent", function(self, event, arg1)
     RaidEvents_SV.history = RaidEvents_SV.history or {}
     if #RaidEvents_SV.history ~= 0 then
       if #RaidEvents_SV.history > self.messageFrame:GetMaxLines() then
-        RaidEvents_SV.history(pack(unpack(RaidEvents_SV.history, #RaidEvents_SV.history - self.messageFrame:GetMaxLines() + 1, #RaidEvents_SV.history)))
+        RaidEvents_SV.history= {unpack(RaidEvents_SV.history, #RaidEvents_SV.history - self.messageFrame:GetMaxLines() + 1, #RaidEvents_SV.history)}
       end
       for _, message in pairs(RaidEvents_SV.history) do
         if message[1] and message[2] then
