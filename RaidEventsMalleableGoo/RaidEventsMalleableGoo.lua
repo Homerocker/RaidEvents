@@ -3,8 +3,9 @@ f.goo = {}
 
 f:SetScript("OnEvent", function(self, _, ...)
   local arg = { ... }
-  if arg[2] == "SPELL_AURA_APPLIED" and (arg[9] == 72550 or arg[9] == 72873 or arg[9] == 72458) then
-    -- 72550 25hc
+  if arg[2] == "SPELL_AURA_APPLIED" and table.contains({ 72550, 72873, 72458, 72874 }, arg[9]) then
+    -- 72874 pp25hc
+    -- 72550 25hc fester
     -- 72873 10hc
     -- 72458 25n
     self.goo[arg[7]] = (self.goo[arg[7]] or 0) + 1
