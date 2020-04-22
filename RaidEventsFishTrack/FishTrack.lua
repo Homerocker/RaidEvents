@@ -15,10 +15,4 @@ fishtrack:SetScript("OnEvent", function(self, event, ...)
     if arg[2] == "SPELL_CREATE" and arg[9] == 57426 then
         table.wipe(self.num)
     end
-    if (arg[2] == "SPELL_AURA_APPLIED" or arg[2] == "SPELL_AURA_REFRESH") and arg[9] == 60122 then
-      RaidEvents:print(arg[4].." applied Baby Spice on "..arg[7])
-    end
-	if arg[7] == "Glitched Snowman" and arg[14] ~= nil and table.contains({16, 17, 18, 20, 24, 48, 80, 28, 124, 126, 127}, arg[14]) then
-      RaidEvents:print(arg[4].." used "..arg[10]..(UnitInRaid("unit") and "" or " (not in our raid)"))
-    end	  
 end)

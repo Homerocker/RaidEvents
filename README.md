@@ -25,3 +25,5 @@
     Displays Vampiric Bite casters and targets on BQL.
 ### 8 RaidEventsVengefulSpirit
     Displays who triggered Vengeful Spirit explosion on LDW. Only detects explosions that are available in combat log (unreliable).
+### 9 RaidEventsBabySpice
+    Displays Baby Spice users and targets.

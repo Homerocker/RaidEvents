@@ -1,0 +1,5 @@
+## Interface: 30300
+## Title: Raid Events: Baby Spice
+## Author: Homerocker
+## Dependencies: RaidEvents
+BabySpice.lua
