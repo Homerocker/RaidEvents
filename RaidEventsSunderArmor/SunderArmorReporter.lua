@@ -18,7 +18,8 @@ end
 
 f:SetScript("OnEvent", function(self, _, ...)
   local arg = { ... }
-  if table.contains({ "SPELL_AURA_APPLIED_DOSE", "SPELL_AURA_REFRESH", "SPELL_AURA_APPLIED" }, arg[2]) and arg[9] == 58567 then
+  if arg[2] == "SPELL_CAST_SUCCESS" and arg[9] == 7386 then
+  --table.contains({ "SPELL_AURA_APPLIED_DOSE", "SPELL_AURA_REFRESH", "SPELL_AURA_APPLIED" }, arg[2]) and arg[9] == 58567 then
     self.playerlist[arg[4]] = (self.playerlist[arg[4]] or 0) + 1
   end
 end)
