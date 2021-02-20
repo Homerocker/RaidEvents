@@ -73,11 +73,11 @@ f:SetScript("OnEvent", function(self, event, ...)
       end
       self.backlash_damage = self.backlash_damage + arg[12]
     end
-  elseif arg[2] == "SPELL_CAST_SUCCESS" and table.contains({ 45438, 642 }, arg[9]) then
+  --elseif arg[2] == "SPELL_CAST_SUCCESS" and table.contains({ 45438, 642 }, arg[9]) then
     -- abilities that remove instability stacks without exploding
     -- 45438 Ice Block
     -- 642 Divine Shield
-    self.stacks[arg[4]] = nil
+    --self.stacks[arg[4]] = nil
   end
 end)
 f:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
