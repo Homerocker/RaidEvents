@@ -1,6 +1,6 @@
 ## Interface: 30300
 ## Title: Raid Events: Backlash
 ## Author: Homerocker
-## Version 1.01
+## Version 1.02
 ## Dependencies: RaidEvents, DBM-Core
 BacklashReporter.lua
