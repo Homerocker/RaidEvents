@@ -2,5 +2,5 @@
 ## Title: Raid Events: Backlash
 ## Author: Homerocker
 ## Version 1.01
-## Dependencies: RaidEvents
+## Dependencies: RaidEvents, DBM-Core
 BacklashReporter.lua
