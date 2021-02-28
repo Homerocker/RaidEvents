@@ -16,8 +16,6 @@ function f:reset()
     self.backlash_damaged_pets = 0
 end
 
-f:reset()
-
 function f:formatDamage(damage)
     return (floor(damage / 100 + 0.5) / 10)
 end
@@ -86,6 +84,7 @@ local function DBMEventHandler(event, mod)
         f:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
         f:report()
     elseif event == "pull" then
+        f:reset()
         f:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     end
 end
