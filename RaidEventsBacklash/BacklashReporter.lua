@@ -60,7 +60,7 @@ f:SetScript("OnEvent", function(self, _, ...)
         -- instability removed
         self.timestamp = arg[1]
         table.insert(self.explosion_players, arg[7])
-    elseif arg[2] == "SPELL_DAMAGE" and table.contains({ 71046, 71045 }, arg[9]) then
+    elseif arg[2] == "SPELL_DAMAGE" and table.contains({ 71046, 71045, 71044, 69770 }, arg[9]) then
         -- 69770 10n
         -- 71045 10hc
         -- 71044 25n
