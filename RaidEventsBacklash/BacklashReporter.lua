@@ -60,19 +60,25 @@ f:SetScript("OnEvent", function(self, _, ...)
         -- instability removed
         self.timestamp = arg[1]
         table.insert(self.explosion_players, arg[7])
-    elseif arg[2] == "SPELL_DAMAGE" and table.contains({ 71046, 71045, 71044, 69770 }, arg[9]) then
+    elseif table.contains({ 71046, 71045, 71044, 69770 }, arg[9]) then
         -- 69770 10n
         -- 71045 10hc
         -- 71044 25n
         -- 71045 25hc
         -- backlash damage, recording
-        self.timestamp = arg[1]
-        if UnitIsPlayer(arg[7]) then
-            self.backlash_damaged_players = self.backlash_damaged_players + 1
-        else
-            self.backlash_damaged_pets = self.backlash_damaged_pets + 1
+        if arg[2] == "SPELL_DAMAGE" then
+            self.timestamp = arg[1]
+            if UnitIsPlayer(arg[7]) then
+                self.backlash_damaged_players = self.backlash_damaged_players + 1
+            else
+                self.backlash_damaged_pets = self.backlash_damaged_pets + 1
+            end
+            self.backlash_damage = (self.backlash_damage or 0) + arg[12]
+        elseif arg[2] == "SPELL_MISSED" then
+            if self.backlash_damage == nil then
+                self.backlash_damage = 0
+            end
         end
-        self.backlash_damage = (self.backlash_damage or 0) + arg[12]
     end
 end)
 
