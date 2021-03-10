@@ -1,5 +1,7 @@
 local f = CreateFrame("Frame")
 
+f.COMBAT_LOG_DELAY = math.min(select(3, GetNetStats()), 100) * 2 / 1000
+
 function f:reset()
     self.timestamp = nil
     if not self.explosion_players then
@@ -49,16 +51,13 @@ function f:report()
         end
         RaidEvents:print(text)
     end
-    if self.in_combat == false then
-        f:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-    end
     self:reset()
 end
 
 f:SetScript("OnEvent", function(self, _, ...)
     --timestamp, event, sourceguid, sourcename, sourceflags, destguid, destname, destflags, spellid, spellname, spellschool, amount, stacks
     local arg = { ... }
-    if self.timestamp and (arg[1] - self.timestamp) > (select(3, GetNetStats()) * 2 / 1000) then
+    if self.timestamp and (arg[1] - self.timestamp) > self.COMBAT_LOG_DELAY then
         self:report()
     end
     if arg[2] == "SPELL_AURA_APPLIED" and arg[9] == 69766 then
@@ -100,8 +99,8 @@ local function DBMEventHandler(event, mod)
     if event == "kill" or event == "wipe" then
         LibStub("AceAddon-3.0"):NewAddon("BacklashReporter", "AceTimer-3.0"):ScheduleTimer(function()
             f:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-            f:reset()
-        end, 1)
+            f:report()
+        end, math.ceil(f.COMBAT_LOG_DELAY))
     elseif event == "pull" then
         f:reset()
         f:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
