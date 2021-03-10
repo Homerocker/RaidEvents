@@ -1,5 +1,5 @@
 local f = CreateFrame("Frame")
-
+f.in_combat = false
 function f:reset()
     self.timestamp = nil
     if not self.explosion_players then
@@ -32,8 +32,12 @@ function f:report()
     else
         local players = 0
         local pets = 0
-        for _ in pairs(self.backlash_damaged_players) do players = players + 1 end
-        for _ in pairs(self.backlash_damaged_pets) do pets = pets + 1 end
+        for _ in pairs(self.backlash_damaged_players) do
+            players = players + 1
+        end
+        for _ in pairs(self.backlash_damaged_pets) do
+            pets = pets + 1
+        end
         local text = GetSpellLink(71045) .. ": " .. self:formatDamage(self.backlash_damage) .. "k [" .. players .. " players, " .. pets .. " pets]: "
         for index, name in pairs(self.explosion_players) do
             if self.stacks[name] then
@@ -44,6 +48,9 @@ function f:report()
             end
         end
         RaidEvents:print(text)
+    end
+    if self.in_combat == false then
+        f:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     end
     self:reset()
 end
@@ -91,10 +98,10 @@ local function DBMEventHandler(event, mod)
         return
     end
     if event == "kill" or event == "wipe" then
-        f:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-        f:report()
+        f.in_combat = false
     elseif event == "pull" then
         f:reset()
+        f.in_combat = true
         f:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     end
 end
