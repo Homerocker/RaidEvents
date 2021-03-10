@@ -3,4 +3,5 @@
 ## Author: Homerocker
 ## Version 1.02
 ## Dependencies: RaidEvents, DBM-Core
+Libs/AceTimer-3.0.lua
 BacklashReporter.lua

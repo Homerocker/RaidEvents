@@ -1,5 +1,5 @@
 local f = CreateFrame("Frame")
-f.in_combat = false
+
 function f:reset()
     self.timestamp = nil
     if not self.explosion_players then
@@ -98,13 +98,16 @@ local function DBMEventHandler(event, mod)
         return
     end
     if event == "kill" or event == "wipe" then
-        f.in_combat = false
+        LibStub("AceAddon-3.0"):NewAddon("BacklashReporter", "AceTimer-3.0"):ScheduleTimer(function()
+            f:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+            f:reset()
+        end, 1)
     elseif event == "pull" then
         f:reset()
-        f.in_combat = true
         f:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     end
 end
+
 DBM:RegisterCallback("pull", DBMEventHandler)
 DBM:RegisterCallback("kill", DBMEventHandler)
 DBM:RegisterCallback("wipe", DBMEventHandler)
