@@ -1,21 +1,20 @@
 local f = CreateFrame("Frame")
 
 f.COMBAT_LOG_DELAY = math.min(select(3, GetNetStats()), 100) * 2 / 1000
+f.explosion_players = {}
+f.stacks = {}
+f.backlash_damaged_players = {}
+f.backlash_damaged_pets = {}
 
 function f:reset()
     self.timestamp = nil
-    if not self.explosion_players then
-        self.stacks = {}
-        self.explosion_players = {}
-    else
-        for _, name in pairs(self.explosion_players) do
-            self.stacks[name] = nil
-        end
-        table.wipe(self.explosion_players)
+    for _, name in pairs(self.explosion_players) do
+        self.stacks[name] = nil
     end
+    table.wipe(self.explosion_players)
     self.backlash_damage = nil
-    self.backlash_damaged_players = {}
-    self.backlash_damaged_pets = {}
+    table.wipe(self.backlash_damaged_players)
+    table.wipe(self.backlash_damaged_pets)
 end
 
 function f:formatDamage(damage)
