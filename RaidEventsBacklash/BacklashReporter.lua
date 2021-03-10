@@ -12,8 +12,8 @@ function f:reset()
         table.wipe(self.explosion_players)
     end
     self.backlash_damage = nil
-    self.backlash_damaged_players = 0
-    self.backlash_damaged_pets = 0
+    self.backlash_damaged_players = {}
+    self.backlash_damaged_pets = {}
 end
 
 function f:formatDamage(damage)
@@ -30,7 +30,11 @@ function f:report()
         -- no instability data
         RaidEvents:print("\124cFFFF0000BacklashReporter: Instability not recorded, dumping Backlash data.")
     else
-        local text = GetSpellLink(71045) .. ": " .. self:formatDamage(self.backlash_damage) .. "k [" .. self.backlash_damaged_players .. " players, " .. self.backlash_damaged_pets .. " pets]: "
+        local players = 0
+        local pets = 0
+        for _ in pairs(self.backlash_damaged_players) do players = players + 1 end
+        for _ in pairs(self.backlash_damaged_pets) do pets = pets + 1 end
+        local text = GetSpellLink(71045) .. ": " .. self:formatDamage(self.backlash_damage) .. "k [" .. players .. " players, " .. pets .. " pets]: "
         for index, name in pairs(self.explosion_players) do
             if self.stacks[name] then
                 if index ~= 1 then
@@ -69,9 +73,9 @@ f:SetScript("OnEvent", function(self, _, ...)
         if arg[2] == "SPELL_DAMAGE" then
             self.timestamp = arg[1]
             if UnitIsPlayer(arg[7]) then
-                self.backlash_damaged_players = self.backlash_damaged_players + 1
+                self.backlash_damaged_players[arg[6]] = true
             else
-                self.backlash_damaged_pets = self.backlash_damaged_pets + 1
+                self.backlash_damaged_pets[arg[6]] = true
             end
             self.backlash_damage = (self.backlash_damage or 0) + arg[12]
         elseif arg[2] == "SPELL_MISSED" then
