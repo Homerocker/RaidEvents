@@ -69,6 +69,16 @@ f:SetScript("OnEvent", function(self, _, ...)
         -- instability removed
         self.timestamp = arg[1]
         table.insert(self.explosion_players, arg[7])
+    --elseif arg[2] == "UNIT_DIED" and UnitIsPlayer(arg[7]) then
+        -- unit died and can't explode
+        --if self.stacks[arg[7]] ~= nil then
+        --    self.stacks[arg[7]] = nil
+        --    for k,v in pairs(self.explosion_players) do
+        --        if v == arg[7] then
+        --            table.remove(self.explosion_players, k)
+        --        end
+        --    end
+        --end
     elseif table.contains({ 71046, 71045, 71044, 69770 }, arg[9]) then
         -- 69770 10n
         -- 71045 10hc
@@ -96,10 +106,10 @@ local function DBMEventHandler(event, mod)
         return
     end
     if event == "kill" or event == "wipe" then
-        LibStub("AceAddon-3.0"):NewAddon("BacklashReporter", "AceTimer-3.0"):ScheduleTimer(function()
+        LibStub("AceAddon-3.0"):NewAddon("RaidEventsBacklash", "AceTimer-3.0"):ScheduleTimer(function()
             f:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
             f:report()
-        end, math.ceil(f.COMBAT_LOG_DELAY))
+        end, math.ceil(f.COMBAT_LOG_DELAY) + 1)
     elseif event == "pull" then
         f:reset()
         f:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
