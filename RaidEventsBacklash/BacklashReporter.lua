@@ -1,5 +1,5 @@
 local f = CreateFrame("Frame")
-
+local ace = LibStub("AceAddon-3.0"):NewAddon("RaidEventsBacklash", "AceTimer-3.0")
 f.COMBAT_LOG_DELAY = math.min(select(3, GetNetStats()), 100) * 2 / 1000
 f.explosion_players = {}
 f.stacks = {}
@@ -106,7 +106,7 @@ local function DBMEventHandler(event, mod)
         return
     end
     if event == "kill" or event == "wipe" then
-        LibStub("AceAddon-3.0"):NewAddon("RaidEventsBacklash", "AceTimer-3.0"):ScheduleTimer(function()
+        ace:ScheduleTimer(function()
             f:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
             f:report()
         end, math.ceil(f.COMBAT_LOG_DELAY) + 1)
