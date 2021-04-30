@@ -57,27 +57,27 @@ RaidEventsBacklash.f:SetScript("OnEvent", function(self, _, ...)
     local arg = { ... }
     if arg[2] == "SPELL_AURA_APPLIED" and arg[9] == 69766 then
         -- instability applied (1st stack)
-        self.parent.stacks[arg[7]] = 1
+        RaidEventsBacklash.stacks[arg[7]] = 1
     elseif arg[2] == "SPELL_AURA_APPLIED_DOSE" and arg[9] == 69766 then
         -- instability stack gained
-        self.parent.stacks[arg[7]] = arg[13]
+        RaidEventsBacklash.stacks[arg[7]] = arg[13]
     elseif table.contains({ 71046, 71045, 71044, 69770 }, arg[9]) then
         -- 69770 10n
         -- 71045 10hc
         -- 71044 25n
         -- 71045 25hc
         -- backlash damage, recording
-        if self.parent.timers[arg[4]] then
-            self.parent:CancelTimer(self.parent.timers[arg[4]])
+        if RaidEventsBacklash.timers[arg[4]] then
+            RaidEventsBacklash:CancelTimer(RaidEventsBacklash.timers[arg[4]])
         end
         if arg[2] == "SPELL_DAMAGE" then
-            self.parent.damage[arg[4]][arg[7]] = arg[12]
+            RaidEventsBacklash.damage[arg[4]][arg[7]] = arg[12]
         elseif arg[2] == "SPELL_MISSED" then
-            self.parent.damage[arg[4]][arg[7]] = 0
+            RaidEventsBacklash.damage[arg[4]][arg[7]] = 0
         end
-        self.parent.timers[arg[4]] = self.parent:ScheduleTimer(function(self, player)
-            self:report(player)
-        end, self.parent.COMBAT_LOG_DELAY, self.parent, arg[4])
+        RaidEventsBacklash.timers[arg[4]] = self.parent:ScheduleTimer(function(player)
+            RaidEventsBacklash:report(player)
+        end, RaidEventsBacklash.COMBAT_LOG_DELAY, arg[4])
     end
 end)
 
