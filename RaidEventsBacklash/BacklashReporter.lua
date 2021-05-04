@@ -7,9 +7,9 @@ RaidEventsBacklash.f = CreateFrame("Frame")
 
 function RaidEventsBacklash:reset(player)
     if player then
-        table.wipe(self.stacks[player])
+        self.stacks[player] = nil
         table.wipe(self.damage[player])
-        table.wipe(self.timers[player])
+        self.timers[player] = nil
     else
         table.wipe(self.stacks)
         table.wipe(self.damage)
@@ -71,11 +71,17 @@ RaidEventsBacklash.f:SetScript("OnEvent", function(self, _, ...)
             RaidEventsBacklash:CancelTimer(RaidEventsBacklash.timers[arg[4]])
         end
         if arg[2] == "SPELL_DAMAGE" then
+			if RaidEventsBacklash.damage[arg[4]] == nil then
+				RaidEventsBacklash.damage[arg[4]] = {}
+			end
             RaidEventsBacklash.damage[arg[4]][arg[7]] = arg[12]
         elseif arg[2] == "SPELL_MISSED" then
+			if RaidEventsBacklash.damage[arg[4]] == nil then
+				RaidEventsBacklash.damage[arg[4]] = {}
+			end
             RaidEventsBacklash.damage[arg[4]][arg[7]] = 0
         end
-        RaidEventsBacklash.timers[arg[4]] = self.parent:ScheduleTimer(function(player)
+        RaidEventsBacklash.timers[arg[4]] = RaidEventsBacklash:ScheduleTimer(function(player)
             RaidEventsBacklash:report(player)
         end, RaidEventsBacklash.COMBAT_LOG_DELAY, arg[4])
     end
