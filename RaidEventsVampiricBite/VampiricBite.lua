@@ -8,4 +8,16 @@ f:SetScript("OnEvent", function(_, _, ...)
     RaidEvents:print(GetSpellLink(arg[9]) .. ": " .. UnitNameColored(arg[4]) .. " -> " .. UnitNameColored(arg[7]))
   end
 end)
-f:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+
+local function DBMEventHandler(event, mod)
+  if mod.id ~= "Lanathel" then return end
+  if event == "kill" or event == "wipe" then
+    f:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+  elseif event == "pull" then
+    f:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+  end
+end
+
+DBM:RegisterCallback("pull", DBMEventHandler)
+DBM:RegisterCallback("kill", DBMEventHandler)
+DBM:RegisterCallback("wipe", DBMEventHandler)
