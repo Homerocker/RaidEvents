@@ -1,8 +1,8 @@
-local RaidEventsBacklash = LibStub("AceAddon-3.0"):NewAddon("RaidEventsBacklash", "AceTimer-3.0")
+local RaidEventsBacklash = CreateFrame("Frame")
 RaidEventsBacklash.COMBAT_LOG_DELAY = math.min(select(3, GetNetStats()), 100) * 2 / 1000
 RaidEventsBacklash.stacks = {}
 RaidEventsBacklash.damage = {}
-RaidEventsBacklash.timers = {}
+RaidEventsBacklash.timers = LibStub("AceAddon-3.0"):NewAddon("RaidEventsBacklash", "AceTimer-3.0")
 
 function RaidEventsBacklash:reset(player)
   if player then
@@ -12,7 +12,7 @@ function RaidEventsBacklash:reset(player)
   else
     table.wipe(self.stacks)
     table.wipe(self.damage)
-    self:CancelAllTimers()
+    self.timers:CancelAllTimers()
     table.wipe(self.timers)
   end
 end
@@ -69,7 +69,7 @@ RaidEventsBacklash:SetScript("OnEvent", function(self, _, ...)
 
     if self.timers[arg[4]] then
       -- cancelling old timer
-      self:CancelTimer(self.timers[arg[4]])
+      self.timers:CancelTimer(self.timers[arg[4]])
     end
 
     if self.damage[arg[4]] == nil then
@@ -84,7 +84,7 @@ RaidEventsBacklash:SetScript("OnEvent", function(self, _, ...)
     end
 
     -- registering new timer
-    self.timers[arg[4]] = self:ScheduleTimer(function(player)
+    self.timers[arg[4]] = self.timers:ScheduleTimer(function(player)
       self:report(player)
     end, self.COMBAT_LOG_DELAY, arg[4])
 
