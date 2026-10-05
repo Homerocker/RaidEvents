@@ -1,18 +1,11 @@
 local f = CreateFrame("Frame")
-f.shades = {}
 f.explosions = {}
 
 f:SetScript("OnEvent", function(self, _, ...)
-  local arg = { ... }
-  if arg[2] == "SPELL_SUMMON" and arg[9] == 71426 then
-    -- Vengeful Shade summoned
-    -- 71426 25n/25hc/10hc
-    table.insert(self.shades, arg[6])
-  elseif arg[2] == "SWING_DAMAGE" or arg[2] == "SWING_MISSED" then
-    for _, v in pairs(self.shades) do
-      if v == arg[3] then
-        self.explosions[arg[7]] = (self.explosions[arg[7]] or 0) + 1
-      end
+  local _, subevent, _, source, _, _, dest = ...
+  if subevent == "SWING_DAMAGE" or subevent == "SWING_MISSED" then
+    if source == "Vengeful Shade" then
+      self.explosions[dest] = (self.explosions[dest] or 0) + 1
     end
   end
 end)
@@ -33,11 +26,9 @@ local function DBMEventHandler(event, mod)
       end
     end
     RaidEvents:print(text)
-    table.wipe(f.shades)
     table.wipe(f.explosions)
     f:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
   elseif event == "pull" then
-    table.wipe(f.shades)
     table.wipe(f.explosions)
     f:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
   end
